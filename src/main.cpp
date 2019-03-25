@@ -11,8 +11,43 @@ const byte MPU9250_address= 0x68;
 bool barometerOnline = false;
 bool mpuOnline = false;
 
+// Software SPI (slower updates, more flexible pin options):
+// pin 7 - Serial clock out (SCLK)
+// pin 6 - Serial data out (DIN)
+// pin 5 - Data/Command select (D/C)
+// pin 4 - LCD chip select (CS)
+// pin 3 - LCD reset (RST)
+ #if defined (__STM32F1__) || defined (ARDUINO_ARCH_STM32)
+   Adafruit_PCD8544 display = Adafruit_PCD8544(PB12, PA8, PB15, PB14, PB13);
+ #else
+   Adafruit_PCD8544 display = Adafruit_PCD8544(7, 6, 5, 4, 3);
+ #endif
+
+// Hardware SPI (faster, but must use certain hardware pins):
+// SCK is LCD serial clock (SCLK) - this is pin 13 on Arduino Uno
+// MOSI is LCD DIN - this is pin 11 on an Arduino Uno
+// pin 5 - Data/Command select (D/C)
+// pin 4 - LCD chip select (CS)
+// pin 3 - LCD reset (RST)
+// For the STM32F1:
+//   MOSI - on PA7 (Maple Mini: also known as pin 4)
+//   SCK  - on PA5 (Maple Mini: also known as pin 6)
+//
+//#if defined (__STM32F1__) || defined (ARDUINO_ARCH_STM32)
+  //Adafruit_PCD8544 display = Adafruit_PCD8544(PB15, PB14, PB13);
+//#else
+  //Adafruit_PCD8544 display = Adafruit_PCD8544(5, 4, 3);
+//#endif
+// Note with hardware SPI MISO and SS pins aren't used but will still be read
+// and written to during SPI transfer.  Be careful sharing these pins!
+
+
+
+
+
 Adafruit_BMP280 barometer;
 MPU9250 mpu(Wire, MPU9250_address); 
+
 
 void ic2_scan();
 void displayBarometerReadings(Adafruit_BMP280&);
@@ -78,6 +113,14 @@ void setup() {
   delay(3000);
   Serial.println("Assuming sensor is level and stable, reading bias measurements");
   delay(1000);
+  Serial.println("Setting up the LCD");
+  display.begin();
+  display.setContrast(50);
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(BLACK);
+  display.setCursor(0,0);
+  display.println("0123456789ABCDEFGHIJKLMNOPQRST");
 }
 
 void loop() {
@@ -101,7 +144,7 @@ void loop() {
 void displayBarometerReadings(Adafruit_BMP280& _barometer)
 {
   // Temperature
-  Serial.print("Temperatue: ");
+  Serial.print("Temperature: ");
   Serial.println(_barometer.readTemperature()); // in celsius
   
   // Pressure
