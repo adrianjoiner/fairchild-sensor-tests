@@ -16,7 +16,7 @@ BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
 
-#include "Adafruit_GFX.h "
+#include <Adafruit_GFX.h>
 
 #ifndef _ADAFRUIT_PCD8544_H
 #define _ADAFRUIT_PCD8544_H
@@ -24,7 +24,7 @@ All text above, and the splash screen must be included in any redistribution
 #if defined(ARDUINO) && ARDUINO >= 100
   #include "Arduino.h"
 #else
-  #include "WProgram.h"
+  #include "WProgram.h" 
   #include "pins_arduino.h"
 #endif
 
