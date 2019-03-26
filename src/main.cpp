@@ -47,7 +47,7 @@ bool mpuOnline = false;
 
 Adafruit_BMP280 barometer;
 MPU9250 mpu(Wire, MPU9250_address); 
-
+ 
 
 void ic2_scan();
 void displayBarometerReadings(Adafruit_BMP280&);
@@ -113,6 +113,7 @@ void setup() {
   delay(3000);
   Serial.println("Assuming sensor is level and stable, reading bias measurements");
   delay(1000);
+
   Serial.println("Setting up the LCD");
   display.begin();
   display.setContrast(50);
