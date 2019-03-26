@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "MPU9250.h"
-#include <Adafruit_BMP280.h> //include the Adafruit BMP280 library
+#include "Adafruit_BMP280.h" //include the Adafruit BMP280 library
 #include "Adafruit_PCD8544.h"
 #include "Adafruit_GFX.h"
 
@@ -17,6 +17,10 @@ bool mpuOnline = false;
 // pin 5 - Data/Command select (D/C)
 // pin 4 - LCD chip select (CS)
 // pin 3 - LCD reset (RST)
+
+// Adafruit_PCD8544::Adafruit_PCD8544(int8_t SCLK, int8_t DIN, int8_t DC,
+//    int8_t CS, int8_t RST)
+// LCD:  GND  LIGHT       VCC  CLK(PB12)     DIN(PA8)     DC(PB15)      CE(PB14)      RST(PB13)
  #if defined (__STM32F1__) || defined (ARDUINO_ARCH_STM32)
    Adafruit_PCD8544 display = Adafruit_PCD8544(PB12, PA8, PB15, PB14, PB13);
  #else
@@ -126,19 +130,29 @@ void setup() {
 
 void loop() {
   
-  if (barometerOnline)
-  {
-    displayBarometerReadings(barometer);
-    Serial.println("\n============================\n");
-  }
+  // if (barometerOnline)
+  // {
+  //   displayBarometerReadings(barometer);
+  //   Serial.println("\n============================\n");
+  // }
 
-  if (mpuOnline)
-  {
-    displayMpuReadings(mpu);
-    Serial.println("\n============================\n");
-  }
-
-
+  // if (mpuOnline)
+  // {
+  //   displayMpuReadings(mpu);
+  //   Serial.println("\n============================\n");
+  // }
+  display.begin();
+  display.clearDisplay();
+  display.println("0123456789ABCD");
+  display.println("1");
+  display.println("2");
+  display.println("3");
+  display.println("4");
+  display.println("5");
+  display.println("6");
+  display.display();
+	delay(2000);
+	display.clearDisplay();
 }
 
 // Display current output of the barometer

@@ -22,3 +22,14 @@ Using forked [Adafruit-PCD8544-Nokia-5110-LCD-library](https://github.com/Kenjut
 [Nokia5110 lcd](https://lastminuteengineers.com/nokia-5110-lcd-arduino-tutorial/)
 
 The screen is graphic, ie not char based, but can contain 6 rows of 12 chars
+
+LCD:    GND     LIGHT       VCC     CLK     DIN     DC      CE      RST
+
+Screen size 14 X 6
+
+
+
+
+
+## Using SPI with the STM32
+https://circuitdigest.com/microcontroller-projects/stm32-spi-communication-tutorial
