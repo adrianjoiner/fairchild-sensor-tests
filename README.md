@@ -4,9 +4,10 @@
 Pinned and referenced in the platformio.ini file
 - Adafruit GFX Library@1.4.7
 - Adafruit BMP280@1.0.2
+- Adafruit Unified Sensor@1.0.3 
 
 ## libraries - 3rd Party
-Download the zip and copy to the libs folder. Decided to do this and not use git submodlues as gives more flexability if anyof them need changing for own needs
+Download the zip and copy to the libs folder. Decided to do this and not use git submodlues as gives more flexability if any of them need changing
 [MPU9250](https://github.com/bolderflight/MPU9250)
 [Ported Adafruit PCD8544 - Nokia 5110](https://github.com/KenjutsuGH/Adafruit-PCD8544-Nokia-5110-LCD-library)
 [Roger clarks Adafruit_STM32](https://github.com/rogerclarkmelbourne/Arduino_STM32.git)
@@ -21,14 +22,7 @@ Using forked [Adafruit-PCD8544-Nokia-5110-LCD-library](https://github.com/Kenjut
 [also here ](https://randomnerdtutorials.com/complete-guide-for-nokia-5110-lcd-with-arduino/) for example code
 [Nokia5110 lcd](https://lastminuteengineers.com/nokia-5110-lcd-arduino-tutorial/)
 
-The screen is graphic, ie not char based, but can contain 6 rows of 12 chars
-
-LCD:    GND     LIGHT       VCC     CLK     DIN     DC      CE      RST
-
-Screen size 14 X 6
-
-
-
+Note the screen is graphic, ie not char based, but can contain 6 rows of 14 chars. Once you have printed to the display you then have to 'display' the text before any output appears
 
 
 ## Using SPI with the STM32
