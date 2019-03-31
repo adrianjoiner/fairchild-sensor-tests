@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "MPU9250.h"
-#include <Adafruit_BMP280.h> //include the Adafruit BMP280 library
+#include "Adafruit_BMP280.h" //include the Adafruit BMP280 library
 #include "Adafruit_PCD8544.h"
 #include "Adafruit_GFX.h"
 
@@ -17,33 +17,17 @@ bool mpuOnline = false;
 // pin 5 - Data/Command select (D/C)
 // pin 4 - LCD chip select (CS)
 // pin 3 - LCD reset (RST)
+
+// Adafruit_PCD8544::Adafruit_PCD8544(int8_t SCLK, int8_t DIN, int8_t DC,
+//    int8_t CS, int8_t RST)
+//
+// LCD Pin outs:
+// LCD:  GND : LIGHT : VCC : CLK(PB12) : DIN(PA8) : DC(PB15) : CE(PB14) : RST(PB13)
  #if defined (__STM32F1__) || defined (ARDUINO_ARCH_STM32)
    Adafruit_PCD8544 display = Adafruit_PCD8544(PB12, PA8, PB15, PB14, PB13);
  #else
    Adafruit_PCD8544 display = Adafruit_PCD8544(7, 6, 5, 4, 3);
  #endif
-
-// Hardware SPI (faster, but must use certain hardware pins):
-// SCK is LCD serial clock (SCLK) - this is pin 13 on Arduino Uno
-// MOSI is LCD DIN - this is pin 11 on an Arduino Uno
-// pin 5 - Data/Command select (D/C)
-// pin 4 - LCD chip select (CS)
-// pin 3 - LCD reset (RST)
-// For the STM32F1:
-//   MOSI - on PA7 (Maple Mini: also known as pin 4)
-//   SCK  - on PA5 (Maple Mini: also known as pin 6)
-//
-//#if defined (__STM32F1__) || defined (ARDUINO_ARCH_STM32)
-  //Adafruit_PCD8544 display = Adafruit_PCD8544(PB15, PB14, PB13);
-//#else
-  //Adafruit_PCD8544 display = Adafruit_PCD8544(5, 4, 3);
-//#endif
-// Note with hardware SPI MISO and SS pins aren't used but will still be read
-// and written to during SPI transfer.  Be careful sharing these pins!
-
-
-
-
 
 Adafruit_BMP280 barometer;
 MPU9250 mpu(Wire, MPU9250_address); 
@@ -62,26 +46,39 @@ void setup() {
   // Initialise the wire library
   Wire.begin();
   Wire.setClock(400000); //Increase to fast I2C speed!
-  delay(2000);
 
   // scan for connected sensors, epecting to see ...
   //    MPU9255 at 0x68
   //    BMP-280 at 0x76
   // Check for any connected sensors
+  display.begin();
+  display.clearDisplay();
+  display.display();
+  display.setCursor(0,0);
+  display.print("ic2 bus scan");
+  display.display();
   ic2_scan();
 
-  delay(5000);
 
+ 
   // Initialise the BMP280 barometer (altitude sensor)
   //Adafruit_BMP280 barometer;
+  display.setCursor(2,0);
+  display.print("BMP280 ");
+  display.display();
+  display.setCursor(2,9);
   if (!barometer.begin(BMP280_address)) //check if you are able to read the sensor
   {  
     Serial.println("SENSOR: unable to initialise BMP-280 barometer, sensor will be ignored.");
     barometerOnline = false;
+    display.print("Offline");
   } else
   {
     barometerOnline = true;
+    display.print("Online");
   }
+
+  
   
 
   // Initialise the MPU9250_address
@@ -121,7 +118,7 @@ void setup() {
   display.setTextSize(1);
   display.setTextColor(BLACK);
   display.setCursor(0,0);
-  display.println("0123456789ABCDEFGHIJKLMNOPQRST");
+  //display.println("0123456789ABCDEFGHIJKLMNOPQRST");
 }
 
 void loop() {
@@ -137,8 +134,18 @@ void loop() {
     displayMpuReadings(mpu);
     Serial.println("\n============================\n");
   }
-
-
+  // display.begin();
+  // display.clearDisplay();
+  // display.println("0123456789ABCD");
+  // display.println("1");
+  // display.println("2");
+  // display.println("3");
+  // display.println("4");
+  // display.println("5");
+  // display.println("6");
+  // display.display();
+	delay(3000);
+	// display.clearDisplay();
 }
 
 // Display current output of the barometer
