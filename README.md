@@ -32,7 +32,7 @@ Note connecting to a 5v supply; it will supply 3.3v from its 3.3v pins for use b
 However see individual sensors for more details
 
 
-# Sensors and their purpose
+# Sensors
 
 ## MPU9255
 This sensor...
@@ -88,9 +88,14 @@ CLK     ->      B12
 5   Down
 6
 
+# FSiA6 RX
+## Pin connections
+PPM     ->      A0
+VCC     ->      5v
+GND     ->      GND
 
 
 
 
-
-
+__SCRATC__
+https://www.stm32duino.com/viewtopic.php?t=4186
