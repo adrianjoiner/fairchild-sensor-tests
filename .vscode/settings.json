@@ -1,6 +1,6 @@
 {
     "terminal.integrated.env.osx": {
-        "PATH": "/Users/join310728/.platformio/penv/bin:/Users/join310728/.platformio/penv:/opt/chefdk/bin:/Users/join310728/.chefdk/gem/ruby/2.5.0/bin:/opt/chefdk/embedded/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/opt/chefdk/gitbin",
+        "PATH": "/Users/aj/.platformio/penv/bin:/Users/aj/.platformio/penv:/opt/chef-workstation/bin:/Users/aj/.chefdk/gem/ruby/2.5.0/bin:/opt/chef-workstation/embedded/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/opt/chef-workstation/gitbin",
         "PLATFORMIO_CALLER": "vscode"
     }
 }
