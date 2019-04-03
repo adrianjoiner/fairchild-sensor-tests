@@ -252,6 +252,10 @@ void ic2_scan() {
 //
 // We are attaching this code to an interrupt handler so it is called whenerver the interrupt fires
 // It resets the input registers and sets the mode used for input
+int16_t loop_counter;
+uint8_t warning;
+int32_t channel_3_start, channel_3;
+void handler_channel_1(void);
 
 void timer_setup(void) {
   Timer2.attachCompare1Interrupt(handler_channel_1); // handler_channel_1 is called whenever interrupt is fired
@@ -321,8 +325,7 @@ void timer_setup(void) {
 }
 
 int32_t channel_1_start, channel_1;
-int32_t channel_2_start, channel_2;
-int32_t channel_3_start, channel_3;
+int32_t channel_2_start, channel_2; 
 int32_t channel_4_start, channel_4;
 int32_t channel_5_start, channel_5;
 int32_t channel_6_start, channel_6;
