@@ -250,8 +250,11 @@ void ic2_scan() {
 //STM32 for Arduino - Connecting an RC receiver via input capture mode: https://youtu.be/JFSFbSg0l2M
 //STM32 for Arduino - Electronic Speed Controller (ESC) - STM32F103C8T6: https://youtu.be/Nju9rvZOjVQ
 //
+// We are attaching this code to an interrupt handler so it is called whenerver the interrupt fires
+// It resets the input registers and sets the mode used for input
+
 void timer_setup(void) {
-  Timer2.attachCompare1Interrupt(handler_channel_1);
+  Timer2.attachCompare1Interrupt(handler_channel_1); // handler_channel_1 is called whenever interrupt is fired
   TIMER2_BASE->CR1 = TIMER_CR1_CEN;
   TIMER2_BASE->CR2 = 0;
   TIMER2_BASE->SMCR = 0;
@@ -316,5 +319,29 @@ void timer_setup(void) {
     pinMode(PB9, PWM);
   }
 }
+
+int32_t channel_1_start, channel_1;
+int32_t channel_2_start, channel_2;
+int32_t channel_3_start, channel_3;
+int32_t channel_4_start, channel_4;
+int32_t channel_5_start, channel_5;
+int32_t channel_6_start, channel_6;
+int32_t measured_time, measured_time_start;
+uint8_t channel_select_counter;
+
+void handler_channel_1(void) {
+    measured_time = TIMER2_BASE->CCR1 - measured_time_start;
+    if (measured_time < 0)measured_time += 0xFFFF;
+    measured_time_start = TIMER2_BASE->CCR1;
+    if (measured_time > 3000)channel_select_counter = 0;
+    else channel_select_counter++;
+
+    if (channel_select_counter == 1)channel_1 = measured_time;
+    if (channel_select_counter == 2)channel_2 = measured_time;
+    if (channel_select_counter == 3)channel_3 = measured_time;
+    if (channel_select_counter == 4)channel_4 = measured_time;
+    if (channel_select_counter == 5)channel_5 = measured_time;
+    if (channel_select_counter == 6)channel_6 = measured_time;
+  }
 
  

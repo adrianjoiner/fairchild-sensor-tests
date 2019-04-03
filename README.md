@@ -90,12 +90,14 @@ CLK     ->      B12
 
 # FSiA6 RX
 ## Pin connections
-PPM     ->      A0
-VCC     ->      5v
-GND     ->      GND
+PPM (top pin, far left)     ->  A0  
+VCC (middle far left pin)   ->  5v  
+GND (bottom left as facing) ->  GND 
 
 
 
 
 __SCRATC__
 https://www.stm32duino.com/viewtopic.php?t=4186
+
+Watch this https://www.youtube.com/watch?v=utTi0awlUzg

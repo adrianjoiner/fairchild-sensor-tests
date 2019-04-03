@@ -1,0 +1,2 @@
+- [ ] [Watch video from 16:50 again](https://www.youtube.com/watch?v=JFSFbSg0l2M&feature=youtu.be)
+- [ ] Get a similar test program working to show input from the RX
