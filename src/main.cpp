@@ -11,13 +11,6 @@ const byte MPU9250_address= 0x68;
 bool barometerOnline = false;
 bool mpuOnline = false;
 
-// Software SPI (slower updates, more flexible pin options):
-// pin 7 - Serial clock out (SCLK)
-// pin 6 - Serial data out (DIN)
-// pin 5 - Data/Command select (D/C)
-// pin 4 - LCD chip select (CS)
-// pin 3 - LCD reset (RST)
-
 // Adafruit_PCD8544::Adafruit_PCD8544(int8_t SCLK, int8_t DIN, int8_t DC,
 //    int8_t CS, int8_t RST)
 //
@@ -317,10 +310,10 @@ void timer_setup(void) {
     TIMER4_BASE->CCR2 = channel_3;
     TIMER4_BASE->CCR3 = channel_3;
     TIMER4_BASE->CCR4 = channel_3;
-    pinMode(PB6, PWM);
-    pinMode(PB7, PWM);
-    pinMode(PB8, PWM);
-    pinMode(PB9, PWM);
+    // pinMode(PB6, PWM);
+    // pinMode(PB7, PWM);
+    // pinMode(PB8, PWM);
+    // pinMode(PB9, PWM);
   }
 }
 

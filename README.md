@@ -97,7 +97,7 @@ GND (bottom left as facing) ->  GND
 
 
 
-__SCRATC__
+__SCRATCH__
 https://www.stm32duino.com/viewtopic.php?t=4186
 
 Watch this https://www.youtube.com/watch?v=utTi0awlUzg
