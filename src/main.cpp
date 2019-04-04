@@ -24,6 +24,7 @@ bool mpuOnline = false;
 
 Adafruit_BMP280 barometer;
 MPU9250 mpu(Wire, MPU9250_address); 
+void handler_channel_1(void);
  
 
 void ic2_scan();
@@ -50,10 +51,10 @@ void setup() {
   display.setCursor(0,0);
   display.print("ic2 bus scan");
   display.display();
+
+  // check for connected sensors
   ic2_scan();
 
-
- 
   // Initialise the BMP280 barometer (altitude sensor)
   //Adafruit_BMP280 barometer;
   display.setCursor(2,0);
@@ -112,6 +113,24 @@ void setup() {
   display.setTextColor(BLACK);
   display.setCursor(0,0);
   //display.println("0123456789ABCDEFGHIJKLMNOPQRST");
+
+  //
+  // setup RX connection
+  pinMode(PA0, INPUT);
+  delay(250);
+
+  Timer2.attachCompare1Interrupt(handler_channel_1);
+  TIMER2_BASE->CR1 = TIMER_CR1_CEN;
+  TIMER2_BASE->CR2 = 0;
+  TIMER2_BASE->SMCR = 0;
+  TIMER2_BASE->DIER = TIMER_DIER_CC1IE;
+  TIMER2_BASE->EGR = 0;
+  TIMER2_BASE->CCMR1 = TIMER_CCMR1_CC1S_INPUT_TI1;
+  TIMER2_BASE->CCMR2 = 0;
+  TIMER2_BASE->CCER = TIMER_CCER_CC1E;
+  TIMER2_BASE->PSC = 71;
+  TIMER2_BASE->ARR = 0xFFFF;
+  TIMER2_BASE->DCR = 0;
 }
 
 void loop() {
@@ -217,7 +236,7 @@ void ic2_scan() {
     error = Wire.endTransmission();
     
     if (error == 0) {
-      Serial.print("I2C device found at address 0x");
+      Serial.print("ic2 device found at address 0x");
       if (address < 16) 
         Serial.print("0");
       Serial.println(address, HEX);
@@ -232,7 +251,7 @@ void ic2_scan() {
     }    
   }
   if (nDevices == 0)
-    Serial.println("No I2C devices found");
+    Serial.println("No ic2 devices found");
   else
     Serial.println("Scan complete.");
 }
@@ -248,74 +267,8 @@ void ic2_scan() {
 int16_t loop_counter;
 uint8_t warning;
 int32_t channel_3_start, channel_3;
-void handler_channel_1(void);
 
-void timer_setup(void) {
-  Timer2.attachCompare1Interrupt(handler_channel_1); // handler_channel_1 is called whenever interrupt is fired
-  TIMER2_BASE->CR1 = TIMER_CR1_CEN;
-  TIMER2_BASE->CR2 = 0;
-  TIMER2_BASE->SMCR = 0;
-  TIMER2_BASE->DIER = TIMER_DIER_CC1IE;
-  TIMER2_BASE->EGR = 0;
-  TIMER2_BASE->CCMR1 = TIMER_CCMR1_CC1S_INPUT_TI1;
-  TIMER2_BASE->CCMR2 = 0;
-  TIMER2_BASE->CCER = TIMER_CCER_CC1E;
-  //TIMER2_BASE->CCER |= TIMER_CCER_CC1P;    //Detect falling edge.
-  TIMER2_BASE->CCER &= ~TIMER_CCER_CC1P; //Detect rising edge.
-  TIMER2_BASE->PSC = 71;
-  TIMER2_BASE->ARR = 0xFFFF;
-  TIMER2_BASE->DCR = 0;
 
-  //A test is needed to check if the throttle input is active and valid. Otherwise the ESC's might start without any warning.
-  loop_counter = 0;
-  while ((channel_3 > 2100 || channel_3 < 900) && warning == 0) {
-    delay(100);
-    loop_counter++;
-    if (loop_counter == 40) {
-      Serial.println(F("Waiting for a valid receiver channel-3 input signal"));
-      Serial.println(F(""));
-      Serial.println(F("The input pulse should be between 1000 till 2000us"));
-      Serial.print(F("Current channel-3 receiver input value = "));
-      Serial.println(channel_3);
-      Serial.println(F(""));
-      Serial.println(F("Is the receiver connected and the transmitter on?"));
-      Serial.println(F("For more support and questions: www.brokking.net"));
-      Serial.println(F(""));
-      Serial.print(F("Waiting for another 5 seconds."));
-    }
-    if (loop_counter > 40 && loop_counter % 10 == 0)Serial.print(F("."));
-
-    if (loop_counter == 90) {
-      Serial.println(F(""));
-      Serial.println(F(""));
-      Serial.println(F("The ESC outputs are disabled for safety!!!"));
-      warning = 1;
-    }
-  }
-  if (warning == 0) {
-    TIMER4_BASE->CR1 = TIMER_CR1_CEN | TIMER_CR1_ARPE;
-    TIMER4_BASE->CR2 = 0;
-    TIMER4_BASE->SMCR = 0;
-    TIMER4_BASE->DIER = 0;
-    TIMER4_BASE->EGR = 0;
-    TIMER4_BASE->CCMR1 = (0b110 << 4) | TIMER_CCMR1_OC1PE | (0b110 << 12) | TIMER_CCMR1_OC2PE;
-    TIMER4_BASE->CCMR2 = (0b110 << 4) | TIMER_CCMR2_OC3PE | (0b110 << 12) | TIMER_CCMR2_OC4PE;
-    TIMER4_BASE->CCER = TIMER_CCER_CC1E | TIMER_CCER_CC2E | TIMER_CCER_CC3E | TIMER_CCER_CC4E;
-    TIMER4_BASE->PSC = 71;
-    TIMER4_BASE->ARR = 4000;
-    TIMER4_BASE->DCR = 0;
-    TIMER4_BASE->CCR1 = 1000;
-
-    TIMER4_BASE->CCR1 = channel_3;
-    TIMER4_BASE->CCR2 = channel_3;
-    TIMER4_BASE->CCR3 = channel_3;
-    TIMER4_BASE->CCR4 = channel_3;
-    // pinMode(PB6, PWM);
-    // pinMode(PB7, PWM);
-    // pinMode(PB8, PWM);
-    // pinMode(PB9, PWM);
-  }
-}
 
 int32_t channel_1_start, channel_1;
 int32_t channel_2_start, channel_2; 
@@ -325,19 +278,16 @@ int32_t channel_6_start, channel_6;
 int32_t measured_time, measured_time_start;
 uint8_t channel_select_counter;
 
+
+
 void handler_channel_1(void) {
-    measured_time = TIMER2_BASE->CCR1 - measured_time_start;
-    if (measured_time < 0)measured_time += 0xFFFF;
-    measured_time_start = TIMER2_BASE->CCR1;
-    if (measured_time > 3000)channel_select_counter = 0;
-    else channel_select_counter++;
-
-    if (channel_select_counter == 1)channel_1 = measured_time;
-    if (channel_select_counter == 2)channel_2 = measured_time;
-    if (channel_select_counter == 3)channel_3 = measured_time;
-    if (channel_select_counter == 4)channel_4 = measured_time;
-    if (channel_select_counter == 5)channel_5 = measured_time;
-    if (channel_select_counter == 6)channel_6 = measured_time;
+  if (0b1 & GPIOA_BASE->IDR) {
+    channel_1_start = TIMER2_BASE->CCR1;
+    TIMER2_BASE->CCER |= TIMER_CCER_CC1P;
   }
-
- 
+  else {
+    channel_1 = TIMER2_BASE->CCR1 - channel_1_start;
+    if (channel_1 < 0)channel_1 += 0xFFFF;
+    TIMER2_BASE->CCER &= ~TIMER_CCER_CC1P;
+  }
+}
